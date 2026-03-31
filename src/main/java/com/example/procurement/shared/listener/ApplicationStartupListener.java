@@ -2,8 +2,8 @@ package com.example.procurement.shared.listener;
 
 import com.example.procurement.shared.config.DatabaseInitializer;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
+import jakarta.servlet.ServletContextEvent;
+import jakarta.servlet.ServletContextListener;
 
 public class ApplicationStartupListener implements ServletContextListener {
 
