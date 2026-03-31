@@ -1,0 +1,8 @@
+package com.example.procurement.shared.exception;
+
+public class DataAccessException extends RuntimeException {
+
+    public DataAccessException(String message, Throwable cause) {
+        super(message, cause);
+    }
+}

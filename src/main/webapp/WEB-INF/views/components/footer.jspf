@@ -1,0 +1,6 @@
+</main>
+<footer class="mx-auto max-w-7xl px-4 pb-8 text-xs text-stone-500 sm:px-6">
+    <p>Simple procurement workflow demo using Servlet, JSP, JDBC, and SQLite.</p>
+</footer>
+</body>
+</html>

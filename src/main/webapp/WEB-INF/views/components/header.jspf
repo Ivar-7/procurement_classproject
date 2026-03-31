@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Departmental Procurement System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<c:url value='/assets/css/app.css'/>">
+</head>
+<body class="min-h-screen">
+<header class="border-b border-stone-300 bg-white/80 backdrop-blur-sm">
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-4">
+        <a href="<c:url value='/dashboard'/>" class="text-lg font-bold text-teal-800">Procurement System</a>
+        <nav class="flex flex-wrap gap-2 text-sm font-medium text-stone-700">
+            <a class="rounded-md px-3 py-1 hover:bg-stone-100" href="<c:url value='/departments'/>">Departments</a>
+            <a class="rounded-md px-3 py-1 hover:bg-stone-100" href="<c:url value='/suppliers'/>">Suppliers</a>
+            <a class="rounded-md px-3 py-1 hover:bg-stone-100" href="<c:url value='/items'/>">Items</a>
+            <a class="rounded-md px-3 py-1 hover:bg-stone-100" href="<c:url value='/requisitions'/>">Requisitions</a>
+            <a class="rounded-md px-3 py-1 hover:bg-stone-100" href="<c:url value='/quotations'/>">Quotations</a>
+            <a class="rounded-md px-3 py-1 hover:bg-stone-100" href="<c:url value='/purchase-orders'/>">POs</a>
+            <a class="rounded-md px-3 py-1 hover:bg-stone-100" href="<c:url value='/goods-receipts'/>">GRNs</a>
+            <a class="rounded-md px-3 py-1 hover:bg-stone-100" href="<c:url value='/payments'/>">Payments</a>
+        </nav>
+    </div>
+</header>
+
+<main class="mx-auto max-w-7xl p-4 sm:p-6">
+    <c:if test="${not empty param.success}">
+        <div class="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+            ${param.success}
+        </div>
+    </c:if>
+    <c:if test="${not empty param.error}">
+        <div class="mb-4 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
+            ${param.error}
+        </div>
+    </c:if>
