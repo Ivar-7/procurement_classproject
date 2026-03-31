@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/departments")
+@WebServlet("/departments/*")
 public class DepartmentServlet extends HttpServlet {
 
     private final DepartmentService departmentService = new DepartmentService();
@@ -20,6 +20,11 @@ public class DepartmentServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
+        if ("/form".equals(request.getPathInfo())) {
+            request.getRequestDispatcher("/WEB-INF/views/departments/form.jsp").forward(request, response);
+            return;
+        }
+
         request.setAttribute("departments", departmentService.getAllDepartments());
         request.getRequestDispatcher("/WEB-INF/views/departments/list.jsp").forward(request, response);
     }
