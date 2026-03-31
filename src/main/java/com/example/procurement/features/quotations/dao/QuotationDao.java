@@ -33,6 +33,26 @@ public class QuotationDao {
         }
     }
 
+    public Quotation findById(int quoteId) {
+        String sql = "SELECT quote_id, quote_ref, req_id, supplier_id, quote_date, validity_date, subtotal, tax_amount, "
+            + "total_amount, delivery_days, terms, attachment_url, status FROM quotations WHERE quote_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, quoteId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapRow(rs);
+                }
+                return null;
+            }
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to fetch quotation.", e);
+        }
+    }
+
     public void create(Quotation quotation) {
         String sql = "INSERT INTO quotations (quote_ref, req_id, supplier_id, quote_date, validity_date, subtotal, "
             + "tax_amount, total_amount, delivery_days, terms, attachment_url, status) "
@@ -57,6 +77,48 @@ public class QuotationDao {
 
         } catch (SQLException e) {
             throw new DataAccessException("Failed to create quotation.", e);
+        }
+    }
+
+    public boolean update(Quotation quotation) {
+        String sql = "UPDATE quotations SET quote_ref = ?, req_id = ?, supplier_id = ?, quote_date = ?, validity_date = ?, "
+            + "subtotal = ?, tax_amount = ?, total_amount = ?, delivery_days = ?, terms = ?, attachment_url = ?, "
+            + "status = ? WHERE quote_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setString(1, quotation.getQuoteRef());
+            JdbcUtils.setNullableInteger(ps, 2, quotation.getReqId());
+            ps.setInt(3, quotation.getSupplierId());
+            JdbcUtils.setNullableString(ps, 4, quotation.getQuoteDate());
+            JdbcUtils.setNullableString(ps, 5, quotation.getValidityDate());
+            JdbcUtils.setNullableBigDecimal(ps, 6, quotation.getSubtotal());
+            JdbcUtils.setNullableBigDecimal(ps, 7, quotation.getTaxAmount());
+            JdbcUtils.setNullableBigDecimal(ps, 8, quotation.getTotalAmount());
+            JdbcUtils.setNullableInteger(ps, 9, quotation.getDeliveryDays());
+            JdbcUtils.setNullableString(ps, 10, quotation.getTerms());
+            JdbcUtils.setNullableString(ps, 11, quotation.getAttachmentUrl());
+            ps.setString(12, quotation.getStatus() == null ? "Requested" : quotation.getStatus());
+            ps.setInt(13, quotation.getQuoteId());
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to update quotation.", e);
+        }
+    }
+
+    public boolean deleteById(int quoteId) {
+        String sql = "DELETE FROM quotations WHERE quote_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, quoteId);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to delete quotation.", e);
         }
     }
 

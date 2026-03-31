@@ -29,8 +29,19 @@ public class PurchaseOrderServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // Placeholder: implement purchase order form processing here when ready.
+        String pathInfo = request.getPathInfo();
+
+        if ("/delete".equals(pathInfo)) {
+            // Instruction: read poId from request.getParameter, parse it, call delete, then redirect.
+            ServletMessageUtils.redirectWithMessage(request, response, "/purchase-orders", "error",
+                "Implement POST /purchase-orders/delete here: request.getParameter(\"poId\") -> Integer.parseInt(...) -> purchaseOrderService.deletePurchaseOrder(...), then redirect to /purchase-orders."
+            );
+            return;
+        }
+
+        // Instruction: read form fields with request.getParameter, map to PurchaseOrder, then create or update.
         ServletMessageUtils.redirectWithMessage(request, response, "/purchase-orders/form", "error",
-            "Implement purchase order doPost here.");
+            "Implement POST /purchase-orders here: map request.getParameter values to PurchaseOrder; if poId is blank call purchaseOrderService.createPurchaseOrder(purchaseOrder), else set poId and call purchaseOrderService.updatePurchaseOrder(purchaseOrder), then redirect."
+        );
     }
 }

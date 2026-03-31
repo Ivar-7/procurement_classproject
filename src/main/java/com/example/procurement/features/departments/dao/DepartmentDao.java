@@ -33,6 +33,26 @@ public class DepartmentDao {
         }
     }
 
+    public Department findById(int deptId) {
+        String sql = "SELECT dept_id, dept_name, budget_code, annual_budget, head_name, email, created_at "
+            + "FROM departments WHERE dept_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, deptId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapRow(rs);
+                }
+                return null;
+            }
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to fetch department.", e);
+        }
+    }
+
     public void create(Department department) {
         String sql = "INSERT INTO departments (dept_name, budget_code, annual_budget, head_name, email) "
             + "VALUES (?, ?, ?, ?, ?)";
@@ -49,6 +69,40 @@ public class DepartmentDao {
 
         } catch (SQLException e) {
             throw new DataAccessException("Failed to create department.", e);
+        }
+    }
+
+    public boolean update(Department department) {
+        String sql = "UPDATE departments SET dept_name = ?, budget_code = ?, annual_budget = ?, head_name = ?, "
+            + "email = ? WHERE dept_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setString(1, department.getDeptName());
+            JdbcUtils.setNullableString(ps, 2, department.getBudgetCode());
+            JdbcUtils.setNullableBigDecimal(ps, 3, department.getAnnualBudget());
+            JdbcUtils.setNullableString(ps, 4, department.getHeadName());
+            JdbcUtils.setNullableString(ps, 5, department.getEmail());
+            ps.setInt(6, department.getDeptId());
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to update department.", e);
+        }
+    }
+
+    public boolean deleteById(int deptId) {
+        String sql = "DELETE FROM departments WHERE dept_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, deptId);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to delete department.", e);
         }
     }
 

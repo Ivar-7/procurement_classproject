@@ -29,8 +29,19 @@ public class ItemServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // Placeholder: implement item form processing here when ready.
+        String pathInfo = request.getPathInfo();
+
+        if ("/delete".equals(pathInfo)) {
+            // Instruction: read itemId from request.getParameter, parse it, call delete, then redirect.
+            ServletMessageUtils.redirectWithMessage(request, response, "/items", "error",
+                "Implement POST /items/delete here: request.getParameter(\"itemId\") -> Integer.parseInt(...) -> itemService.deleteItem(...), then redirect to /items."
+            );
+            return;
+        }
+
+        // Instruction: read form fields with request.getParameter, map to Item, then create or update.
         ServletMessageUtils.redirectWithMessage(request, response, "/items/form", "error",
-            "Implement item doPost here.");
+            "Implement POST /items here: map request.getParameter values to Item; if itemId is blank call itemService.createItem(item), else set itemId and call itemService.updateItem(item), then redirect."
+        );
     }
 }

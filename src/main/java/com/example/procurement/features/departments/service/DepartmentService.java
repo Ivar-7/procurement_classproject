@@ -13,7 +13,19 @@ public class DepartmentService {
         return departmentDao.findAll();
     }
 
+    public Department getDepartmentById(int deptId) {
+        return departmentDao.findById(deptId);
+    }
+
     public void createDepartment(Department department) {
         departmentDao.create(department);
+    }
+
+    public boolean updateDepartment(Department department) {
+        return departmentDao.update(department);
+    }
+
+    public boolean deleteDepartment(int deptId) {
+        return departmentDao.deleteById(deptId);
     }
 }

@@ -13,7 +13,19 @@ public class RequisitionService {
         return requisitionDao.findAll();
     }
 
+    public Requisition getRequisitionById(int reqId) {
+        return requisitionDao.findById(reqId);
+    }
+
     public void createRequisition(Requisition requisition) {
         requisitionDao.create(requisition);
+    }
+
+    public boolean updateRequisition(Requisition requisition) {
+        return requisitionDao.update(requisition);
+    }
+
+    public boolean deleteRequisition(int reqId) {
+        return requisitionDao.deleteById(reqId);
     }
 }

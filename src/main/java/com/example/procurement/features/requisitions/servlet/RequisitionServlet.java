@@ -29,8 +29,19 @@ public class RequisitionServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // Placeholder: implement requisition form processing here when ready.
+        String pathInfo = request.getPathInfo();
+
+        if ("/delete".equals(pathInfo)) {
+            // Instruction: read reqId from request.getParameter, parse it, call delete, then redirect.
+            ServletMessageUtils.redirectWithMessage(request, response, "/requisitions", "error",
+                "Implement POST /requisitions/delete here: request.getParameter(\"reqId\") -> Integer.parseInt(...) -> requisitionService.deleteRequisition(...), then redirect to /requisitions."
+            );
+            return;
+        }
+
+        // Instruction: read form fields with request.getParameter, map to Requisition, then create or update.
         ServletMessageUtils.redirectWithMessage(request, response, "/requisitions/form", "error",
-            "Implement requisition doPost here.");
+            "Implement POST /requisitions here: map request.getParameter values to Requisition; if reqId is blank call requisitionService.createRequisition(requisition), else set reqId and call requisitionService.updateRequisition(requisition), then redirect."
+        );
     }
 }

@@ -13,7 +13,19 @@ public class PaymentService {
         return paymentDao.findAll();
     }
 
+    public Payment getPaymentById(int paymentId) {
+        return paymentDao.findById(paymentId);
+    }
+
     public void createPayment(Payment payment) {
         paymentDao.create(payment);
+    }
+
+    public boolean updatePayment(Payment payment) {
+        return paymentDao.update(payment);
+    }
+
+    public boolean deletePayment(int paymentId) {
+        return paymentDao.deleteById(paymentId);
     }
 }

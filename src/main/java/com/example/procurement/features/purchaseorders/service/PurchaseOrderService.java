@@ -13,7 +13,19 @@ public class PurchaseOrderService {
         return purchaseOrderDao.findAll();
     }
 
+    public PurchaseOrder getPurchaseOrderById(int poId) {
+        return purchaseOrderDao.findById(poId);
+    }
+
     public void createPurchaseOrder(PurchaseOrder purchaseOrder) {
         purchaseOrderDao.create(purchaseOrder);
+    }
+
+    public boolean updatePurchaseOrder(PurchaseOrder purchaseOrder) {
+        return purchaseOrderDao.update(purchaseOrder);
+    }
+
+    public boolean deletePurchaseOrder(int poId) {
+        return purchaseOrderDao.deleteById(poId);
     }
 }

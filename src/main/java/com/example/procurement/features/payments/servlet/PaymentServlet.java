@@ -29,8 +29,19 @@ public class PaymentServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // Placeholder: implement payment form processing here when ready.
+        String pathInfo = request.getPathInfo();
+
+        if ("/delete".equals(pathInfo)) {
+            // Instruction: read paymentId from request.getParameter, parse it, call delete, then redirect.
+            ServletMessageUtils.redirectWithMessage(request, response, "/payments", "error",
+                "Implement POST /payments/delete here: request.getParameter(\"paymentId\") -> Integer.parseInt(...) -> paymentService.deletePayment(...), then redirect to /payments."
+            );
+            return;
+        }
+
+        // Instruction: read form fields with request.getParameter, map to Payment, then create or update.
         ServletMessageUtils.redirectWithMessage(request, response, "/payments/form", "error",
-            "Implement payment doPost here.");
+            "Implement POST /payments here: map request.getParameter values to Payment; if paymentId is blank call paymentService.createPayment(payment), else set paymentId and call paymentService.updatePayment(payment), then redirect."
+        );
     }
 }

@@ -13,7 +13,19 @@ public class GoodsReceiptService {
         return goodsReceiptDao.findAll();
     }
 
+    public GoodsReceipt getGoodsReceiptById(int grnId) {
+        return goodsReceiptDao.findById(grnId);
+    }
+
     public void createGoodsReceipt(GoodsReceipt goodsReceipt) {
         goodsReceiptDao.create(goodsReceipt);
+    }
+
+    public boolean updateGoodsReceipt(GoodsReceipt goodsReceipt) {
+        return goodsReceiptDao.update(goodsReceipt);
+    }
+
+    public boolean deleteGoodsReceipt(int grnId) {
+        return goodsReceiptDao.deleteById(grnId);
     }
 }

@@ -33,6 +33,26 @@ public class SupplierDao {
         }
     }
 
+    public Supplier findById(int supplierId) {
+        String sql = "SELECT supplier_id, company_name, contact_person, phone, email, category, status, created_at "
+            + "FROM suppliers WHERE supplier_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, supplierId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapRow(rs);
+                }
+                return null;
+            }
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to fetch supplier.", e);
+        }
+    }
+
     public void create(Supplier supplier) {
         String sql = "INSERT INTO suppliers (company_name, contact_person, phone, email, category, status) "
             + "VALUES (?, ?, ?, ?, ?, ?)";
@@ -50,6 +70,41 @@ public class SupplierDao {
 
         } catch (SQLException e) {
             throw new DataAccessException("Failed to create supplier.", e);
+        }
+    }
+
+    public boolean update(Supplier supplier) {
+        String sql = "UPDATE suppliers SET company_name = ?, contact_person = ?, phone = ?, email = ?, "
+            + "category = ?, status = ? WHERE supplier_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setString(1, supplier.getCompanyName());
+            JdbcUtils.setNullableString(ps, 2, supplier.getContactPerson());
+            JdbcUtils.setNullableString(ps, 3, supplier.getPhone());
+            JdbcUtils.setNullableString(ps, 4, supplier.getEmail());
+            JdbcUtils.setNullableString(ps, 5, supplier.getCategory());
+            ps.setString(6, supplier.getStatus() == null ? "Active" : supplier.getStatus());
+            ps.setInt(7, supplier.getSupplierId());
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to update supplier.", e);
+        }
+    }
+
+    public boolean deleteById(int supplierId) {
+        String sql = "DELETE FROM suppliers WHERE supplier_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, supplierId);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to delete supplier.", e);
         }
     }
 

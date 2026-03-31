@@ -29,8 +29,19 @@ public class QuotationServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // Placeholder: implement quotation form processing here when ready.
+        String pathInfo = request.getPathInfo();
+
+        if ("/delete".equals(pathInfo)) {
+            // Instruction: read quoteId from request.getParameter, parse it, call delete, then redirect.
+            ServletMessageUtils.redirectWithMessage(request, response, "/quotations", "error",
+                "Implement POST /quotations/delete here: request.getParameter(\"quoteId\") -> Integer.parseInt(...) -> quotationService.deleteQuotation(...), then redirect to /quotations."
+            );
+            return;
+        }
+
+        // Instruction: read form fields with request.getParameter, map to Quotation, then create or update.
         ServletMessageUtils.redirectWithMessage(request, response, "/quotations/form", "error",
-            "Implement quotation doPost here.");
+            "Implement POST /quotations here: map request.getParameter values to Quotation; if quoteId is blank call quotationService.createQuotation(quotation), else set quoteId and call quotationService.updateQuotation(quotation), then redirect."
+        );
     }
 }

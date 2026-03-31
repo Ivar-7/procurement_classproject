@@ -29,8 +29,19 @@ public class SupplierServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // Placeholder: implement supplier form processing here when ready.
+        String pathInfo = request.getPathInfo();
+
+        if ("/delete".equals(pathInfo)) {
+            // Instruction: read supplierId from request.getParameter, parse it, call delete, then redirect.
+            ServletMessageUtils.redirectWithMessage(request, response, "/suppliers", "error",
+                "Implement POST /suppliers/delete here: request.getParameter(\"supplierId\") -> Integer.parseInt(...) -> supplierService.deleteSupplier(...), then redirect to /suppliers."
+            );
+            return;
+        }
+
+        // Instruction: read form fields with request.getParameter, map to Supplier, then create or update.
         ServletMessageUtils.redirectWithMessage(request, response, "/suppliers/form", "error",
-            "Implement supplier doPost here.");
+            "Implement POST /suppliers here: map request.getParameter values to Supplier; if supplierId is blank call supplierService.createSupplier(supplier), else set supplierId and call supplierService.updateSupplier(supplier), then redirect."
+        );
     }
 }

@@ -13,7 +13,19 @@ public class ItemService {
         return itemDao.findAll();
     }
 
+    public Item getItemById(int itemId) {
+        return itemDao.findById(itemId);
+    }
+
     public void createItem(Item item) {
         itemDao.create(item);
+    }
+
+    public boolean updateItem(Item item) {
+        return itemDao.update(item);
+    }
+
+    public boolean deleteItem(int itemId) {
+        return itemDao.deleteById(itemId);
     }
 }

@@ -33,6 +33,26 @@ public class RequisitionDao {
         }
     }
 
+    public Requisition findById(int reqId) {
+        String sql = "SELECT req_id, req_number, dept_id, requested_by, request_date, justification, total_estimated, "
+            + "urgency, status, approved_by, approved_date FROM requisitions WHERE req_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, reqId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapRow(rs);
+                }
+                return null;
+            }
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to fetch requisition.", e);
+        }
+    }
+
     public void create(Requisition requisition) {
         String sql = "INSERT INTO requisitions (req_number, dept_id, requested_by, request_date, justification, "
             + "total_estimated, urgency, status, approved_by, approved_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -54,6 +74,46 @@ public class RequisitionDao {
 
         } catch (SQLException e) {
             throw new DataAccessException("Failed to create requisition.", e);
+        }
+    }
+
+    public boolean update(Requisition requisition) {
+        String sql = "UPDATE requisitions SET req_number = ?, dept_id = ?, requested_by = ?, request_date = ?, "
+            + "justification = ?, total_estimated = ?, urgency = ?, status = ?, approved_by = ?, approved_date = ? "
+            + "WHERE req_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setString(1, requisition.getReqNumber());
+            ps.setInt(2, requisition.getDeptId());
+            JdbcUtils.setNullableString(ps, 3, requisition.getRequestedBy());
+            JdbcUtils.setNullableString(ps, 4, requisition.getRequestDate());
+            JdbcUtils.setNullableString(ps, 5, requisition.getJustification());
+            JdbcUtils.setNullableBigDecimal(ps, 6, requisition.getTotalEstimated());
+            ps.setString(7, requisition.getUrgency() == null ? "Medium" : requisition.getUrgency());
+            ps.setString(8, requisition.getStatus() == null ? "Draft" : requisition.getStatus());
+            JdbcUtils.setNullableString(ps, 9, requisition.getApprovedBy());
+            JdbcUtils.setNullableString(ps, 10, requisition.getApprovedDate());
+            ps.setInt(11, requisition.getReqId());
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to update requisition.", e);
+        }
+    }
+
+    public boolean deleteById(int reqId) {
+        String sql = "DELETE FROM requisitions WHERE req_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, reqId);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to delete requisition.", e);
         }
     }
 

@@ -29,8 +29,19 @@ public class GoodsReceiptServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        // Placeholder: implement goods receipt form processing here when ready.
+        String pathInfo = request.getPathInfo();
+
+        if ("/delete".equals(pathInfo)) {
+            // Instruction: read grnId from request.getParameter, parse it, call delete, then redirect.
+            ServletMessageUtils.redirectWithMessage(request, response, "/goods-receipts", "error",
+                "Implement POST /goods-receipts/delete here: request.getParameter(\"grnId\") -> Integer.parseInt(...) -> goodsReceiptService.deleteGoodsReceipt(...), then redirect to /goods-receipts."
+            );
+            return;
+        }
+
+        // Instruction: read form fields with request.getParameter, map to GoodsReceipt, then create or update.
         ServletMessageUtils.redirectWithMessage(request, response, "/goods-receipts/form", "error",
-            "Implement goods receipt doPost here.");
+            "Implement POST /goods-receipts here: map request.getParameter values to GoodsReceipt; if grnId is blank call goodsReceiptService.createGoodsReceipt(goodsReceipt), else set grnId and call goodsReceiptService.updateGoodsReceipt(goodsReceipt), then redirect."
+        );
     }
 }

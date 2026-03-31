@@ -13,7 +13,19 @@ public class SupplierService {
         return supplierDao.findAll();
     }
 
+    public Supplier getSupplierById(int supplierId) {
+        return supplierDao.findById(supplierId);
+    }
+
     public void createSupplier(Supplier supplier) {
         supplierDao.create(supplier);
+    }
+
+    public boolean updateSupplier(Supplier supplier) {
+        return supplierDao.update(supplier);
+    }
+
+    public boolean deleteSupplier(int supplierId) {
+        return supplierDao.deleteById(supplierId);
     }
 }

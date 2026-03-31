@@ -33,6 +33,26 @@ public class PurchaseOrderDao {
         }
     }
 
+    public PurchaseOrder findById(int poId) {
+        String sql = "SELECT po_id, po_number, req_id, quote_id, supplier_id, dept_id, order_date, delivery_date, "
+            + "subtotal, tax_amount, total_amount, status, notes, created_by FROM purchase_orders WHERE po_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, poId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapRow(rs);
+                }
+                return null;
+            }
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to fetch purchase order.", e);
+        }
+    }
+
     public void create(PurchaseOrder order) {
         String sql = "INSERT INTO purchase_orders (po_number, req_id, quote_id, supplier_id, dept_id, order_date, "
             + "delivery_date, subtotal, tax_amount, total_amount, status, notes, created_by) "
@@ -58,6 +78,49 @@ public class PurchaseOrderDao {
 
         } catch (SQLException e) {
             throw new DataAccessException("Failed to create purchase order.", e);
+        }
+    }
+
+    public boolean update(PurchaseOrder order) {
+        String sql = "UPDATE purchase_orders SET po_number = ?, req_id = ?, quote_id = ?, supplier_id = ?, dept_id = ?, "
+            + "order_date = ?, delivery_date = ?, subtotal = ?, tax_amount = ?, total_amount = ?, status = ?, "
+            + "notes = ?, created_by = ? WHERE po_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setString(1, order.getPoNumber());
+            JdbcUtils.setNullableInteger(ps, 2, order.getReqId());
+            JdbcUtils.setNullableInteger(ps, 3, order.getQuoteId());
+            ps.setInt(4, order.getSupplierId());
+            ps.setInt(5, order.getDeptId());
+            JdbcUtils.setNullableString(ps, 6, order.getOrderDate());
+            JdbcUtils.setNullableString(ps, 7, order.getDeliveryDate());
+            JdbcUtils.setNullableBigDecimal(ps, 8, order.getSubtotal());
+            JdbcUtils.setNullableBigDecimal(ps, 9, order.getTaxAmount());
+            JdbcUtils.setNullableBigDecimal(ps, 10, order.getTotalAmount());
+            ps.setString(11, order.getStatus() == null ? "Draft" : order.getStatus());
+            JdbcUtils.setNullableString(ps, 12, order.getNotes());
+            JdbcUtils.setNullableString(ps, 13, order.getCreatedBy());
+            ps.setInt(14, order.getPoId());
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to update purchase order.", e);
+        }
+    }
+
+    public boolean deleteById(int poId) {
+        String sql = "DELETE FROM purchase_orders WHERE po_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, poId);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to delete purchase order.", e);
         }
     }
 

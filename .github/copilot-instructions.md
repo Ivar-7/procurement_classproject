@@ -28,6 +28,7 @@ Adhere to a **Domain-Based Modular Structure** to ensure separation of concerns.
 * **JSP Standards** — **Strictly zero scriptlets.** Render all dynamic content via JSTL and Expression Language (`${}`). Use `<jsp:include>` for modular UI composition.
 * **Flow Control** — Implement the **Post-Redirect-Get (PRG)** pattern for all data mutations. Every `POST` must conclude with a `response.sendRedirect()` to a `GET` route.
 * **Error Handling** — Map global `<error-page>` entries in `web.xml` for 404/500 codes. Log stack traces server-side; never expose raw SQL or traces to the UI.
+* **Production code** - Avoid hardcoding environment-specific values, implement professional complete code full CRUD operations, with good security practices.
 
 ---
 
@@ -55,5 +56,3 @@ All changes must pass the following Maven lifecycle phases before deployment:
 * Validates the final `.war` structure and runs unit tests.
 
 ---
-
-Simple code no over complications

@@ -33,6 +33,26 @@ public class GoodsReceiptDao {
         }
     }
 
+    public GoodsReceipt findById(int grnId) {
+        String sql = "SELECT grn_id, grn_number, po_id, receipt_date, received_by, delivery_note_ref, total_items, status, notes "
+            + "FROM goods_receipts WHERE grn_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, grnId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapRow(rs);
+                }
+                return null;
+            }
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to fetch goods receipt.", e);
+        }
+    }
+
     public void create(GoodsReceipt receipt) {
         String sql = "INSERT INTO goods_receipts (grn_number, po_id, receipt_date, received_by, delivery_note_ref, "
             + "total_items, status, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -52,6 +72,43 @@ public class GoodsReceiptDao {
 
         } catch (SQLException e) {
             throw new DataAccessException("Failed to create goods receipt.", e);
+        }
+    }
+
+    public boolean update(GoodsReceipt receipt) {
+        String sql = "UPDATE goods_receipts SET grn_number = ?, po_id = ?, receipt_date = ?, received_by = ?, "
+            + "delivery_note_ref = ?, total_items = ?, status = ?, notes = ? WHERE grn_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setString(1, receipt.getGrnNumber());
+            ps.setInt(2, receipt.getPoId());
+            JdbcUtils.setNullableString(ps, 3, receipt.getReceiptDate());
+            JdbcUtils.setNullableString(ps, 4, receipt.getReceivedBy());
+            JdbcUtils.setNullableString(ps, 5, receipt.getDeliveryNoteRef());
+            JdbcUtils.setNullableInteger(ps, 6, receipt.getTotalItems());
+            ps.setString(7, receipt.getStatus() == null ? "Pending" : receipt.getStatus());
+            JdbcUtils.setNullableString(ps, 8, receipt.getNotes());
+            ps.setInt(9, receipt.getGrnId());
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to update goods receipt.", e);
+        }
+    }
+
+    public boolean deleteById(int grnId) {
+        String sql = "DELETE FROM goods_receipts WHERE grn_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, grnId);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to delete goods receipt.", e);
         }
     }
 

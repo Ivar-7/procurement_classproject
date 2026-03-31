@@ -33,6 +33,26 @@ public class ItemDao {
         }
     }
 
+    public Item findById(int itemId) {
+        String sql = "SELECT item_id, item_code, item_name, category, unit_of_measure, estimated_unit_price, supplier_id, is_active "
+            + "FROM items WHERE item_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, itemId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapRow(rs);
+                }
+                return null;
+            }
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to fetch item.", e);
+        }
+    }
+
     public void create(Item item) {
         String sql = "INSERT INTO items (item_code, item_name, category, unit_of_measure, estimated_unit_price, supplier_id, is_active) "
             + "VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -51,6 +71,42 @@ public class ItemDao {
 
         } catch (SQLException e) {
             throw new DataAccessException("Failed to create item.", e);
+        }
+    }
+
+    public boolean update(Item item) {
+        String sql = "UPDATE items SET item_code = ?, item_name = ?, category = ?, unit_of_measure = ?, "
+            + "estimated_unit_price = ?, supplier_id = ?, is_active = ? WHERE item_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setString(1, item.getItemCode());
+            ps.setString(2, item.getItemName());
+            JdbcUtils.setNullableString(ps, 3, item.getCategory());
+            JdbcUtils.setNullableString(ps, 4, item.getUnitOfMeasure());
+            JdbcUtils.setNullableBigDecimal(ps, 5, item.getEstimatedUnitPrice());
+            JdbcUtils.setNullableInteger(ps, 6, item.getSupplierId());
+            ps.setInt(7, Boolean.FALSE.equals(item.getActive()) ? 0 : 1);
+            ps.setInt(8, item.getItemId());
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to update item.", e);
+        }
+    }
+
+    public boolean deleteById(int itemId) {
+        String sql = "DELETE FROM items WHERE item_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, itemId);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to delete item.", e);
         }
     }
 

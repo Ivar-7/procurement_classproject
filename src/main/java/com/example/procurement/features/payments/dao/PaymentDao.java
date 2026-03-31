@@ -33,6 +33,26 @@ public class PaymentDao {
         }
     }
 
+    public Payment findById(int paymentId) {
+        String sql = "SELECT payment_id, payment_ref, po_id, grn_id, invoice_number, invoice_amount, amount_paid, "
+            + "payment_date, payment_method, transaction_ref, status, processed_by FROM payments WHERE payment_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, paymentId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapRow(rs);
+                }
+                return null;
+            }
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to fetch payment.", e);
+        }
+    }
+
     public void create(Payment payment) {
         String sql = "INSERT INTO payments (payment_ref, po_id, grn_id, invoice_number, invoice_amount, amount_paid, "
             + "payment_date, payment_method, transaction_ref, status, processed_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -55,6 +75,47 @@ public class PaymentDao {
 
         } catch (SQLException e) {
             throw new DataAccessException("Failed to create payment.", e);
+        }
+    }
+
+    public boolean update(Payment payment) {
+        String sql = "UPDATE payments SET payment_ref = ?, po_id = ?, grn_id = ?, invoice_number = ?, "
+            + "invoice_amount = ?, amount_paid = ?, payment_date = ?, payment_method = ?, transaction_ref = ?, "
+            + "status = ?, processed_by = ? WHERE payment_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setString(1, payment.getPaymentRef());
+            ps.setInt(2, payment.getPoId());
+            JdbcUtils.setNullableInteger(ps, 3, payment.getGrnId());
+            JdbcUtils.setNullableString(ps, 4, payment.getInvoiceNumber());
+            JdbcUtils.setNullableBigDecimal(ps, 5, payment.getInvoiceAmount());
+            JdbcUtils.setNullableBigDecimal(ps, 6, payment.getAmountPaid());
+            JdbcUtils.setNullableString(ps, 7, payment.getPaymentDate());
+            ps.setString(8, payment.getPaymentMethod() == null ? "Bank Transfer" : payment.getPaymentMethod());
+            JdbcUtils.setNullableString(ps, 9, payment.getTransactionRef());
+            ps.setString(10, payment.getStatus() == null ? "Pending" : payment.getStatus());
+            JdbcUtils.setNullableString(ps, 11, payment.getProcessedBy());
+            ps.setInt(12, payment.getPaymentId());
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to update payment.", e);
+        }
+    }
+
+    public boolean deleteById(int paymentId) {
+        String sql = "DELETE FROM payments WHERE payment_id = ?";
+
+        try (Connection connection = DatabaseManager.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, paymentId);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to delete payment.", e);
         }
     }
 
